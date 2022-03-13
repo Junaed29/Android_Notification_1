@@ -3,10 +3,6 @@ package com.jpsoft.androidnotification1;
 import static com.jpsoft.androidnotification1.MyApp.CHANNEL_ID_1;
 import static com.jpsoft.androidnotification1.MyApp.CHANNEL_ID_2;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -16,7 +12,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.jpsoft.androidnotification1.databinding.ActivityMainBinding;
 
@@ -38,10 +37,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Channel 1 Notification
-    private void channel_1_notification(){
+    private void channel_1_notification() {
         String title = binding.editTextTextTitle.getText().toString();
         String content = binding.editTextTextDescription.getText().toString();
-        Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.message_notification);
+        Uri soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getApplicationContext().getPackageName() + "/" + R.raw.message_notification);
 
         Intent activityIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this,
@@ -53,14 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.dog);
 
-        Notification notification = new NotificationCompat.Builder(this,CHANNEL_ID_1)
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_1)
                 .setSmallIcon(R.drawable.ic_baseline_looks_one_24)
                 .setContentTitle(title)
                 .setContentText(content)
                 .setLargeIcon(largeIcon)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(getString(R.string.long_dummy_text))
-                        .setBigContentTitle("Big Content Title")
+                        //.setBigContentTitle("Big Content Title")
                         .setSummaryText("Summary Text")
                 )
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -76,14 +75,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Channel 2 Notification
-    private void channel_2_notification(){
+    private void channel_2_notification() {
         String title = binding.editTextTextTitle.getText().toString();
         String content = binding.editTextTextDescription.getText().toString();
 
-        Notification notification = new NotificationCompat.Builder(this,CHANNEL_ID_2)
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setSmallIcon(R.drawable.ic_baseline_looks_two_24)
                 .setContentTitle(title)
                 .setContentText(content)
+                .setStyle(new NotificationCompat.InboxStyle()
+                        .addLine("This is line 1")
+                        .addLine("This is line 2")
+                        .addLine("This is line 3")
+                        .addLine("This is line 4")
+                )
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
         notificationManager.notify(2, notification);
