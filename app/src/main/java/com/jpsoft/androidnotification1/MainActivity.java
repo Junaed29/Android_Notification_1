@@ -10,8 +10,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.media.session.MediaSessionCompat;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -22,6 +24,7 @@ import com.jpsoft.androidnotification1.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     NotificationManagerCompat notificationManager;
+    MediaSessionCompat mediaSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         notificationManager = NotificationManagerCompat.from(this);
+        mediaSession = new MediaSessionCompat(this, "MainActivity");
 
         binding.channel1Button.setOnClickListener(v -> channel_1_notification());
 
@@ -48,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
         Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
         broadcastIntent.putExtra("toastMessage", content);
-        PendingIntent actionIntent = PendingIntent.getBroadcast(this, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.dog);
 
@@ -57,19 +60,14 @@ public class MainActivity extends AppCompatActivity {
                 .setContentTitle(title)
                 .setContentText(content)
                 .setLargeIcon(largeIcon)
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(getString(R.string.long_dummy_text))
-                        //.setBigContentTitle("Big Content Title")
-                        .setSummaryText("Summary Text")
-                )
+                .setStyle(new NotificationCompat.BigPictureStyle()
+                        .bigPicture(largeIcon)
+                        .bigLargeIcon(null))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setColor(Color.BLUE)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true) // When tap this notification will removed
                 .setOnlyAlertOnce(true) // Alert just in first time
-                .setSound(soundUri)
-                .addAction(R.mipmap.ic_launcher, "Toast", actionIntent)
                 .build();
         notificationManager.notify(1, notification);
     }
@@ -79,16 +77,23 @@ public class MainActivity extends AppCompatActivity {
         String title = binding.editTextTextTitle.getText().toString();
         String content = binding.editTextTextDescription.getText().toString();
 
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.dog);
+
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setSmallIcon(R.drawable.ic_baseline_looks_two_24)
                 .setContentTitle(title)
                 .setContentText(content)
-                .setStyle(new NotificationCompat.InboxStyle()
-                        .addLine("This is line 1")
-                        .addLine("This is line 2")
-                        .addLine("This is line 3")
-                        .addLine("This is line 4")
+                .setLargeIcon(largeIcon)
+                .addAction(R.drawable.ic_baseline_unfold_less_24, "Unfold Less", null)
+                .addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", null)
+                .addAction(R.drawable.ic_baseline_pause_24, "Pause", null)
+                .addAction(R.drawable.ic_baseline_skip_next_24, "Next", null)
+                .addAction(R.drawable.ic_baseline_unfold_more_24, "Unfold More", null)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(1, 2, 3)
+                        .setMediaSession(mediaSession.getSessionToken())
                 )
+                .setSubText("Sub text")
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
         notificationManager.notify(2, notification);
