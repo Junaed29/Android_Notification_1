@@ -11,6 +11,8 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,10 +51,13 @@ public class MainActivity extends AppCompatActivity {
         broadcastIntent.putExtra("toastMessage", content);
         PendingIntent actionIntent = PendingIntent.getBroadcast(this, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.dog);
+
         Notification notification = new NotificationCompat.Builder(this,CHANNEL_ID_1)
                 .setSmallIcon(R.drawable.ic_baseline_looks_one_24)
                 .setContentTitle(title)
                 .setContentText(content)
+                .setLargeIcon(largeIcon)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setColor(Color.BLUE)
